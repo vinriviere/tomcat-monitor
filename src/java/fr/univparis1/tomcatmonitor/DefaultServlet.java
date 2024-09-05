@@ -75,6 +75,7 @@ public class DefaultServlet extends HttpServlet implements ContainerServlet {
     private void printTomcatState(PrintWriter out, long now) throws ServletException, IOException {
         printOsState(out);
         printJvmState(out);
+        printDataSourcesState(out);
 /*
         out.println("# Engine");
         out.println("Info: " + engine.getInfo());
@@ -202,6 +203,36 @@ public class DefaultServlet extends HttpServlet implements ContainerServlet {
         } catch (JMException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void printDataSourcesState(PrintWriter out) throws ServletException, IOException {
+        out.println("# DataSources");
+        out.println();
+
+        // Retrieve the MBean server
+        MBeanServer mBeanServer = Registry.getRegistry(null, null).getMBeanServer();
+
+        // Query Global Request Processors
+        try {
+            // Query Thread Pools
+            String onStr = "*:type=DataSource,host=*,context=*,class=*,name=*";
+            ObjectName objectName = new ObjectName(onStr);
+            Set<ObjectInstance> set = mBeanServer.queryMBeans(objectName, null);
+            for (ObjectInstance oi : set) {
+                printDataSourceState(out, mBeanServer, oi);
+            }
+        } catch (JMException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void printDataSourceState(PrintWriter out, MBeanServer mBeanServer, ObjectInstance oi) throws ServletException, IOException, JMException {
+        ObjectName objectName = oi.getObjectName();
+        out.println("# " + objectName);
+        out.println("driverClassName: " + mBeanServer.getAttribute(objectName, "driverClassName"));
+        //out.println(" jmxName: " + mBeanServer.getAttribute(objectName, "jmxName"));
+        //out.println(" modelerType: " + mBeanServer.getAttribute(objectName, "modelerType"));
+        out.println();
     }
 
     private void printThreadPoolState(PrintWriter out, MBeanServer mBeanServer, ObjectInstance oi) throws ServletException, IOException, JMException {
