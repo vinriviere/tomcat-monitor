@@ -976,9 +976,14 @@ public class ReadServlet extends HttpServlet implements ContainerServlet {
     private void getThreadsStateHttp(Result result) {
         MBeanServer mBeanServer = Registry.getRegistry(null, null).getMBeanServer();
         try {
-            String onStr = "Catalina:type=RequestProcessor,worker=\"http-*\",*";
+            String onStr = "Catalina:type=RequestProcessor,worker=\"https-*\",*";
             ObjectName objectName = new ObjectName(onStr);
             Set<ObjectInstance> set = mBeanServer.queryMBeans(objectName, null);
+            if (set.isEmpty()) {
+                onStr = "Catalina:type=RequestProcessor,worker=\"http-*\",*";
+                objectName = new ObjectName(onStr);
+                set = mBeanServer.queryMBeans(objectName, null);
+            }
             for (ObjectInstance oi : set) {
                 ObjectName rpName = oi.getObjectName();
 
@@ -1037,9 +1042,14 @@ public class ReadServlet extends HttpServlet implements ContainerServlet {
     private void getGlobalRequestProcessorStateHttp(Result result) {
         MBeanServer mBeanServer = Registry.getRegistry(null, null).getMBeanServer();
         try {
-            String onStr = "Catalina:type=GlobalRequestProcessor,name=\"http-*\"";
+            String onStr = "Catalina:type=GlobalRequestProcessor,name=\"https-*\"";
             ObjectName objectName = new ObjectName(onStr);
             Set<ObjectInstance> set = mBeanServer.queryMBeans(objectName, null);
+            if (set.isEmpty()) {
+                onStr = "Catalina:type=GlobalRequestProcessor,name=\"http-*\"";
+                objectName = new ObjectName(onStr);
+                set = mBeanServer.queryMBeans(objectName, null);
+            }
             for (Iterator<ObjectInstance> iterator = set.iterator(); iterator.hasNext(); ) {
                 ObjectInstance oi = iterator.next();
                 ObjectName rpName = oi.getObjectName();
@@ -1086,9 +1096,14 @@ public class ReadServlet extends HttpServlet implements ContainerServlet {
     private void getThreadPoolStateHttp(Result result) {
         MBeanServer mBeanServer = Registry.getRegistry(null, null).getMBeanServer();
         try {
-            String onStr = "Catalina:type=ThreadPool,name=\"http-*\"";
+            String onStr = "Catalina:type=ThreadPool,name=\"https-*\"";
             ObjectName objectName = new ObjectName(onStr);
             Set<ObjectInstance> set = mBeanServer.queryMBeans(objectName, null);
+            if (set.isEmpty()) {
+                onStr = "Catalina:type=ThreadPool,name=\"http-*\"";
+                objectName = new ObjectName(onStr);
+                set = mBeanServer.queryMBeans(objectName, null);
+            }
             for (Iterator<ObjectInstance> iterator = set.iterator(); iterator.hasNext(); ) {
                 ObjectInstance oi = iterator.next();
                 ObjectName rpName = oi.getObjectName();
