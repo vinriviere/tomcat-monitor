@@ -5,8 +5,8 @@
  */
 package fr.univparis1.tomcatmonitor;
 
+import jakarta.servlet.http.HttpSession;
 import java.lang.reflect.Method;
-import javax.servlet.http.HttpSession;
 import org.apache.catalina.Session;
 
 public class Tools {
